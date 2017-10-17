@@ -117,6 +117,8 @@ ACarPawn::ACarPawn()
 
 	bInReverseGear = false;
 
+	MaxSpeedAllowed = 100;
+
 	//float KPH = FMath::Abs(GetVehicleMovement()->GetForwardSpeed()) * 0.036f;
 }
 
@@ -261,8 +263,13 @@ void ACarPawn::UpdateHUDStrings()
 		int32 Gear = GetVehicleMovement()->GetCurrentGear();
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
 	}	
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::Abs(GetVehicleMovement()->GetForwardSpeed()) * 36.f);
-	UE_LOG(LogTemp, Warning, TEXT("%d"), FMath::FloorToInt(KPH));
+	
+	UE_LOG(LogTemp, Warning, TEXT("%d"), KPH_int);
+
+	if (KPH_int > MaxSpeedAllowed)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EXCEDEU O LIMITE DE VELOCIDADE"));
+	}
 }
 
 void ACarPawn::SetupInCarHUD()
@@ -285,6 +292,10 @@ void ACarPawn::SetupInCarHUD()
 	}
 }
 
+void ACarPawn::ChangeSpeedRule(int32 MaxSpeed)
+{
+	MaxSpeedAllowed = MaxSpeed;
+}
 
 
 #undef LOCTEXT_NAMESPACE

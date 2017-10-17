@@ -76,6 +76,9 @@ public:
 
 	// Begin Actor interface
 	virtual void Tick(float Delta) override;
+
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -103,6 +106,9 @@ public:
 	static const FName LookUpBinding;
 	static const FName LookRightBinding;
 
+	void ChangeSpeedRule(int32);
+
+	int32 MaxSpeedAllowed;
 
 private:
 	/** 
@@ -119,7 +125,7 @@ private:
 	/* Are we on a 'slippery' surface */
 	bool bIsLowFriction;
 
-	
+	void GetMaxSpeedAllowed();
 	
 
 public:
@@ -133,4 +139,6 @@ public:
 	FORCEINLINE UTextRenderComponent* GetInCarSpeed() const { return InCarSpeed; }
 	/** Returns InCarGear subobject **/
 	FORCEINLINE UTextRenderComponent* GetInCarGear() const { return InCarGear; }
+
+	
 };
