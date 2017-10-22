@@ -107,6 +107,7 @@ public:
 	static const FName LookRightBinding;
 
 	void ChangeSpeedRule(int32);
+	void CheckLightColor(int32);
 
 	int32 MaxSpeedAllowed;
 
@@ -125,7 +126,7 @@ private:
 	/* Are we on a 'slippery' surface */
 	bool bIsLowFriction;
 
-	void GetMaxSpeedAllowed();
+	//void GetMaxSpeedAllowed();
 	
 
 public:

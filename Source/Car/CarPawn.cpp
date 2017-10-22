@@ -15,6 +15,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Materials/Material.h"
 #include "GameFramework/Controller.h"
+#include "TrafficLight.h"
 
 // Needed for VR Headset
 #if HMD_MODULE_INCLUDED
@@ -264,7 +265,7 @@ void ACarPawn::UpdateHUDStrings()
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
 	}	
 	
-	UE_LOG(LogTemp, Warning, TEXT("%d"), KPH_int);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), KPH_int);
 
 	if (KPH_int > MaxSpeedAllowed)
 	{
@@ -295,6 +296,14 @@ void ACarPawn::SetupInCarHUD()
 void ACarPawn::ChangeSpeedRule(int32 MaxSpeed)
 {
 	MaxSpeedAllowed = MaxSpeed;
+}
+
+void ACarPawn::CheckLightColor(int32 LightColor)
+{
+	if (LightColor == 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FUROU O SINAL"));
+	}
 }
 
 
