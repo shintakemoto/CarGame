@@ -16,6 +16,7 @@
 #include "Materials/Material.h"
 #include "GameFramework/Controller.h"
 #include "TrafficLight.h"
+#include "Checkpointer.h"
 
 // Needed for VR Headset
 #if HMD_MODULE_INCLUDED
@@ -119,8 +120,7 @@ ACarPawn::ACarPawn()
 	bInReverseGear = false;
 
 	MaxSpeedAllowed = 100;
-
-	//float KPH = FMath::Abs(GetVehicleMovement()->GetForwardSpeed()) * 0.036f;
+	
 }
 
 void ACarPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -194,13 +194,10 @@ void ACarPawn::Tick(float Delta)
 {
 	Super::Tick(Delta);
 
-	// Setup the flag to say we are in reverse gear
 	bInReverseGear = GetVehicleMovement()->GetCurrentGear() < 0;
 	
-	// Update the strings used in the hud (incar and onscreen)
 	UpdateHUDStrings();
 
-	// Set the string in the incar hud
 	SetupInCarHUD();
 
 	bool bHMDActive = false;
@@ -220,8 +217,6 @@ void ACarPawn::Tick(float Delta)
 			InternalCamera->RelativeRotation = HeadRotation;
 		}
 	}
-
-	
 }
 
 void ACarPawn::BeginPlay()
@@ -233,6 +228,9 @@ void ACarPawn::BeginPlay()
 	bEnableInCar = UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled();
 #endif // HMD_MODULE_INCLUDED
 	EnableIncarView(bEnableInCar,true);
+
+	TotalIndex = 0;
+	CPAmmount = 0;
 }
 
 void ACarPawn::OnResetVR()
@@ -296,6 +294,8 @@ void ACarPawn::SetupInCarHUD()
 void ACarPawn::ChangeSpeedRule(int32 MaxSpeed)
 {
 	MaxSpeedAllowed = MaxSpeed;
+	TotalIndex = 0;
+	CPAmmount = 0;
 }
 
 void ACarPawn::CheckLightColor(int32 LightColor)
@@ -304,6 +304,49 @@ void ACarPawn::CheckLightColor(int32 LightColor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FUROU O SINAL"));
 	}
+}
+
+void ACarPawn::CheckDirection(int32 Index)
+{
+	TotalIndex += Index;
+	CPAmmount++;
+	
+	//UE_LOG(LogTemp, Warning, TEXT("total index %d"), this->TotalIndex);
+	//UE_LOG(LogTemp, Warning, TEXT("cp ammount %d"), this->CPAmmount);
+
+	if ((CPAmmount == 1 && TotalIndex != 1) || (CPAmmount == 2 && TotalIndex != 3) || (CPAmmount == 3 && TotalIndex != 7) ||
+		(CPAmmount == 4 && TotalIndex != 15) || (CPAmmount == 5 && TotalIndex != 31)) {
+		UE_LOG(LogTemp, Warning, TEXT("DIRECAO ERRADA"));
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("DIRECAO OK"));
+	}
+	
+	//switch (CPAmmount) {
+	//case 1:
+	//	if (TotalIndex != 1) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
+	//	break;
+	//case 2:
+	//	if (TotalIndex != 3) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
+	//	break;
+	//case 3:
+	//	if (TotalIndex != 7) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
+	//	break;
+	//case 4:
+	//	if (TotalIndex != 15) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
+	//	break;
+	//case 5:
+	//	if (TotalIndex != 31) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
+	//	break;
+	//default:
+	//	break;
+	//}
+
+
+	/*if (TotalIndex != 1 && TotalIndex != 3 && TotalIndex != 7 && TotalIndex != 15 && TotalIndex != 31)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DIRECAO ERRADA"));
+		UE_LOG(LogTemp, Warning, TEXT("total index %d"), this->TotalIndex);
+	}*/
 }
 
 

@@ -20,8 +20,8 @@ ATrafficLight::ATrafficLight()
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ATrafficLight::OnOverlapBegin);
 	RootComponent = CollisionComp;
 
-	FActorSpawnParameters params;
-	UStaticMeshComponent* GetStaticMeshComponent();
+	//FActorSpawnParameters params;
+	//UStaticMeshComponent* GetStaticMeshComponent();
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
@@ -71,8 +71,6 @@ void ATrafficLight::ChangeColor()
 		LightColor = 1;
 	}
 	CountTime();
-
-	
 }
 
 void ATrafficLight::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp,

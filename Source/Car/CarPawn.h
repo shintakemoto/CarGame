@@ -108,8 +108,12 @@ public:
 
 	void ChangeSpeedRule(int32);
 	void CheckLightColor(int32);
+	void CheckDirection(int32);
 
 	int32 MaxSpeedAllowed;
+	int32 TotalIndex;
+	int32 CPAmmount;
+	
 
 private:
 	/** 
@@ -128,6 +132,8 @@ private:
 
 	//void GetMaxSpeedAllowed();
 	
+	UPROPERTY(EditAnywhere)
+	class ACheckpointer* Checkpointer;
 
 public:
 	/** Returns SpringArm subobject **/

@@ -3,7 +3,9 @@
 #include "Street.h"
 #include "Engine/World.h"
 #include "Components/BoxComponent.h"
+#include "Components/ChildActorComponent.h"
 #include "CarPawn.h"
+#include "Checkpointer.h"
 
 // Sets default values
 AStreet::AStreet()
@@ -17,13 +19,16 @@ AStreet::AStreet()
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AStreet::OnOverlapBegin);
 	RootComponent = CollisionComp;
 
-	
+	/*CP = CreateDefaultSubobject<UChildActorComponent>("CP");
+	CP->SetChildActorClass(ACheckpointer::StaticClass());
+	CP->CreateChildActor()*/;
 }
 
 // Called when the game starts or when spawned
 void AStreet::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
