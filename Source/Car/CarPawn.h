@@ -109,7 +109,9 @@ public:
 	void ChangeSpeedRule(int32);
 	void CheckLightColor(int32);
 	void CheckDirection(int32);
+	void InSidewalk();
 
+	int32 Points;
 	int32 MaxSpeedAllowed;
 	int32 TotalIndex;
 	int32 CPAmmount;
@@ -134,6 +136,13 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	class ACheckpointer* Checkpointer;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> HUDMobile;
+
+	UFUNCTION(BlueprintCallable)
+		int32 GetPoints();
+
 
 public:
 	/** Returns SpringArm subobject **/

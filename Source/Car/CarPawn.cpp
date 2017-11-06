@@ -18,6 +18,15 @@
 #include "TrafficLight.h"
 #include "Checkpointer.h"
 
+#include "GameFramework/Controller.h"
+#include "Blueprint/UserWidget.h"
+#include "Runtime/UMG/Public/UMG.h"
+#include "Runtime/UMG/Public/UMGStyle.h"
+#include "Runtime/UMG/Public/Slate/SObjectWidget.h"
+#include "Runtime/UMG/Public/IUMGModule.h"
+#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
+#include "Runtime/UMG/Public/Blueprint/WidgetBlueprintLibrary.h"
+
 // Needed for VR Headset
 #if HMD_MODULE_INCLUDED
 #include "IHeadMountedDisplay.h"
@@ -62,7 +71,7 @@ ACarPawn::ACarPawn()
 	// Create a spring arm component
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
 	SpringArm->TargetOffset = FVector(0.f, 0.f, 200.f);
-	SpringArm->SetRelativeRotation(FRotator(-15.f, 0.f, 0.f));
+	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 600.0f;
 	SpringArm->bEnableCameraRotationLag = true;
@@ -120,7 +129,7 @@ ACarPawn::ACarPawn()
 	bInReverseGear = false;
 
 	MaxSpeedAllowed = 100;
-	
+	Points = 0;
 }
 
 void ACarPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -231,6 +240,19 @@ void ACarPawn::BeginPlay()
 
 	TotalIndex = 0;
 	CPAmmount = 0;
+
+	if (HUDMobile != NULL) {
+		UWorld* World = GetWorld();
+		if (World != nullptr) {
+			APlayerController* Controller = UGameplayStatics::GetPlayerController(World, 0);
+			if (Controller != nullptr) {
+				UUserWidget* UserWidget = UWidgetBlueprintLibrary::Create(World, HUDMobile, Controller);
+				if (UserWidget != nullptr) {
+					UserWidget->AddToViewport();
+				}
+			}
+		}
+	}
 }
 
 void ACarPawn::OnResetVR()
@@ -271,6 +293,11 @@ void ACarPawn::UpdateHUDStrings()
 	}
 }
 
+int32 ACarPawn::GetPoints()
+{
+	return Points;
+}
+
 void ACarPawn::SetupInCarHUD()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
@@ -300,7 +327,7 @@ void ACarPawn::ChangeSpeedRule(int32 MaxSpeed)
 
 void ACarPawn::CheckLightColor(int32 LightColor)
 {
-	if (LightColor == 1)
+	if (LightColor <= 5)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FUROU O SINAL"));
 	}
@@ -321,32 +348,13 @@ void ACarPawn::CheckDirection(int32 Index)
 		UE_LOG(LogTemp, Warning, TEXT("DIRECAO OK"));
 	}
 	
-	//switch (CPAmmount) {
-	//case 1:
-	//	if (TotalIndex != 1) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
-	//	break;
-	//case 2:
-	//	if (TotalIndex != 3) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
-	//	break;
-	//case 3:
-	//	if (TotalIndex != 7) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
-	//	break;
-	//case 4:
-	//	if (TotalIndex != 15) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
-	//	break;
-	//case 5:
-	//	if (TotalIndex != 31) { UE_LOG(LogTemp, Warning, TEXT("CONTRAMAO")); }
-	//	break;
-	//default:
-	//	break;
-	//}
 
+}
 
-	/*if (TotalIndex != 1 && TotalIndex != 3 && TotalIndex != 7 && TotalIndex != 15 && TotalIndex != 31)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("DIRECAO ERRADA"));
-		UE_LOG(LogTemp, Warning, TEXT("total index %d"), this->TotalIndex);
-	}*/
+void ACarPawn::InSidewalk()
+{
+	Points--;
+	UE_LOG(LogTemp, Warning, TEXT("VOCE ESTA NA CALCADA"));
 }
 
 

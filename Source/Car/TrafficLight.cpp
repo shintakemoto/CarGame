@@ -38,14 +38,14 @@ void ATrafficLight::BeginPlay()
 void ATrafficLight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (LightColor == 1) {
+	if (LightColor >= 1 && LightColor <= 5) {
 		Mesh->SetStaticMesh(RedLight);
 	}
-	else if (LightColor == 2) {
-		Mesh->SetStaticMesh(YellowLight);
-	}
-	else if (LightColor == 3) {
+	else if (LightColor > 5 && LightColor <= 9) {
 		Mesh->SetStaticMesh(GreenLight);
+	}
+	else if (LightColor == 10) {
+		Mesh->SetStaticMesh(YellowLight);
 	}
 }
 
@@ -67,7 +67,7 @@ UStaticMeshComponent * ATrafficLight::GetStaticMeshComponent()
 void ATrafficLight::ChangeColor()
 {
 	LightColor++;
-	if (LightColor > 3) {
+	if (LightColor > 10) {
 		LightColor = 1;
 	}
 	CountTime();
