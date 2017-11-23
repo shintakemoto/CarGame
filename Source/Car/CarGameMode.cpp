@@ -6,6 +6,6 @@
 
 ACarGameMode::ACarGameMode()
 {
-	DefaultPawnClass = ACarPawn::StaticClass();
+	//DefaultPawnClass = ACarPawn::StaticClass();
 	HUDClass = ACarHud::StaticClass();
 }

@@ -17,6 +17,7 @@
 #include "GameFramework/Controller.h"
 #include "TrafficLight.h"
 #include "Checkpointer.h"
+#include "CarHud.h"
 
 #include "GameFramework/Controller.h"
 #include "Blueprint/UserWidget.h"
@@ -290,6 +291,7 @@ void ACarPawn::UpdateHUDStrings()
 	if (KPH_int > MaxSpeedAllowed)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("EXCEDEU O LIMITE DE VELOCIDADE"));
+		Points--;
 	}
 }
 
@@ -330,6 +332,10 @@ void ACarPawn::CheckLightColor(int32 LightColor)
 	if (LightColor <= 5)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FUROU O SINAL"));
+		Points--;
+	}
+	else {
+		Points++;
 	}
 }
 
@@ -344,6 +350,7 @@ void ACarPawn::CheckDirection(int32 Index)
 	if ((CPAmmount == 1 && TotalIndex != 1) || (CPAmmount == 2 && TotalIndex != 3) || (CPAmmount == 3 && TotalIndex != 7) ||
 		(CPAmmount == 4 && TotalIndex != 15) || (CPAmmount == 5 && TotalIndex != 31)) {
 		UE_LOG(LogTemp, Warning, TEXT("DIRECAO ERRADA"));
+		Points--;
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("DIRECAO OK"));
 	}
@@ -354,7 +361,7 @@ void ACarPawn::CheckDirection(int32 Index)
 void ACarPawn::InSidewalk()
 {
 	Points--;
-	UE_LOG(LogTemp, Warning, TEXT("VOCE ESTA NA CALCADA"));
+	UE_LOG(LogTemp, Warning, TEXT("CALCADA"));
 }
 
 

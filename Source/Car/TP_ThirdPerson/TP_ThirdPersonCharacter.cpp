@@ -4,10 +4,12 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TrafficLight.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ATP_ThirdPersonCharacter
@@ -15,7 +17,7 @@
 ATP_ThirdPersonCharacter::ATP_ThirdPersonCharacter()
 {
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -45,10 +47,19 @@ ATP_ThirdPersonCharacter::ATP_ThirdPersonCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	CollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComp"));
+	CollisionComp->bGenerateOverlapEvents = true;
+	CollisionComp->SetCollisionProfileName("OverlapAllDynamic");
+	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ATP_ThirdPersonCharacter::OnOverlapBegin);
+	
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
+//void ATP_ThirdPersonCharacter::BeginPlay()
+//{
+//	Super::BeginPlay();
+//	bCanMove = true;
+//}
 
 void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -76,6 +87,16 @@ void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATP_ThirdPersonCharacter::OnResetVR);
 }
 
+
+void ATP_ThirdPersonCharacter::StopMoving()
+{
+	bCanMove = false;
+}
+
+void ATP_ThirdPersonCharacter::KeepMoving()
+{
+	bCanMove = true;
+}
 
 void ATP_ThirdPersonCharacter::OnResetVR()
 {
@@ -131,4 +152,26 @@ void ATP_ThirdPersonCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+UBoxComponent * ATP_ThirdPersonCharacter::GetCollisionComp()
+{
+	return CollisionComp;
+}
+
+bool ATP_ThirdPersonCharacter::GetCanMove()
+{
+	return bCanMove;
+}
+
+void ATP_ThirdPersonCharacter::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if (OtherActor != nullptr && OtherActor->IsA(ATrafficLight::StaticClass())) {
+		//ATrafficLight* TrafficLight = Cast<ATrafficLight>(OtherActor);
+		UE_LOG(LogTemp, Warning, TEXT("RED"));
+			
+	}
+	
+
 }

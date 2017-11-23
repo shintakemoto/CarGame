@@ -28,9 +28,13 @@ public:
 
 	void ChangeColor();
 	void CountTime();
+
+	
 	UStaticMeshComponent* GetStaticMeshComponent();
 	FTimerHandle ChangeColorTimer;
 
+	UFUNCTION(BlueprintCallable)
+		int32 GetLightColor();
 	
 private:
 
@@ -46,10 +50,11 @@ private:
 	UPROPERTY(EditAnywhere)
 		int32 LightColor;
 	UPROPERTY(EditAnywhere)
+		class ATP_ThirdPersonCharacter* CarNPC;
+	UPROPERTY(EditAnywhere)
 		class UBoxComponent* CollisionComp;
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 
 };

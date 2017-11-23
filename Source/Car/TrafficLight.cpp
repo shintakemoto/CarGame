@@ -6,7 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "CarPawn.h"
-
+#include "TP_ThirdPerson/TP_ThirdPersonCharacter.h"
 
 // Sets default values
 ATrafficLight::ATrafficLight()
@@ -19,9 +19,6 @@ ATrafficLight::ATrafficLight()
 	CollisionComp->SetCollisionProfileName("OverlapAllDynamic");
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ATrafficLight::OnOverlapBegin);
 	RootComponent = CollisionComp;
-
-	//FActorSpawnParameters params;
-	//UStaticMeshComponent* GetStaticMeshComponent();
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
@@ -32,6 +29,7 @@ void ATrafficLight::BeginPlay()
 {
 	Super::BeginPlay();
 	CountTime();
+	
 }
 
 // Called every frame
@@ -43,6 +41,9 @@ void ATrafficLight::Tick(float DeltaTime)
 	}
 	else if (LightColor > 5 && LightColor <= 9) {
 		Mesh->SetStaticMesh(GreenLight);
+		if (CarNPC != nullptr) {
+			CarNPC->KeepMoving();
+		}
 	}
 	else if (LightColor == 10) {
 		Mesh->SetStaticMesh(YellowLight);
@@ -64,19 +65,38 @@ UStaticMeshComponent * ATrafficLight::GetStaticMeshComponent()
 	return Mesh;
 }
 
+int32 ATrafficLight::GetLightColor()
+{
+	return LightColor;
+}
+
 void ATrafficLight::ChangeColor()
 {
 	LightColor++;
 	if (LightColor > 10) {
 		LightColor = 1;
 	}
+	
 	CountTime();
 }
+
 
 void ATrafficLight::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	ACarPawn* CarPawn = Cast<ACarPawn>(OtherActor);
-	CarPawn->CheckLightColor(LightColor);
-
+	if (OtherActor != nullptr && OtherActor->IsA(ACarPawn::StaticClass())) {
+		ACarPawn* CarPawn = Cast<ACarPawn>(OtherActor);
+		CarPawn->CheckLightColor(LightColor);
+	}
+	if (OtherActor != nullptr && OtherActor->IsA(ATP_ThirdPersonCharacter::StaticClass())) {
+		ATP_ThirdPersonCharacter* ThirdPerson = Cast<ATP_ThirdPersonCharacter>(OtherActor);
+		UE_LOG(LogTemp, Warning, TEXT("overlap t light"));
+		CarNPC = ThirdPerson;
+		if (LightColor <= 5) {
+			ThirdPerson->StopMoving();
+		}
+		else {
+			CarNPC->KeepMoving();
+		}
+	}
 }
