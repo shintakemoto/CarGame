@@ -143,7 +143,6 @@ private:
 	UFUNCTION(BlueprintCallable)
 		int32 GetPoints();
 
-
 public:
 	/** Returns SpringArm subobject **/
 	FORCEINLINE USpringArmComponent* GetSpringArm() const { return SpringArm; }

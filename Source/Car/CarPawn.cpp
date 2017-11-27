@@ -27,6 +27,7 @@
 #include "Runtime/UMG/Public/IUMGModule.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "Runtime/UMG/Public/Blueprint/WidgetBlueprintLibrary.h"
+#include "Runtime/Engine/Classes/Engine/TargetPoint.h"
 
 // Needed for VR Headset
 #if HMD_MODULE_INCLUDED

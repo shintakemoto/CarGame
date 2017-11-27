@@ -53,13 +53,8 @@ ATP_ThirdPersonCharacter::ATP_ThirdPersonCharacter()
 	CollisionComp->SetCollisionProfileName("OverlapAllDynamic");
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ATP_ThirdPersonCharacter::OnOverlapBegin);
 	
+	bCanMove = true;
 }
-
-//void ATP_ThirdPersonCharacter::BeginPlay()
-//{
-//	Super::BeginPlay();
-//	bCanMove = true;
-//}
 
 void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -91,6 +86,7 @@ void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* 
 void ATP_ThirdPersonCharacter::StopMoving()
 {
 	bCanMove = false;
+	
 }
 
 void ATP_ThirdPersonCharacter::KeepMoving()
@@ -164,14 +160,20 @@ bool ATP_ThirdPersonCharacter::GetCanMove()
 	return bCanMove;
 }
 
+int ATP_ThirdPersonCharacter::GetTarget()
+{
+	return Target;
+}
+
 void ATP_ThirdPersonCharacter::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	if (OtherActor != nullptr && OtherActor->IsA(ATrafficLight::StaticClass())) {
-		//ATrafficLight* TrafficLight = Cast<ATrafficLight>(OtherActor);
-		UE_LOG(LogTemp, Warning, TEXT("RED"));
-			
+		Target++;
+		UE_LOG(LogTemp, Warning, TEXT("%d"), Target);
+		if (Target > 2) {
+			Target = 0;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("NEXT"));		
 	}
-	
-
 }

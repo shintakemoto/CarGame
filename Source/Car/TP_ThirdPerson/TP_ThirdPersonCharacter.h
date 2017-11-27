@@ -25,7 +25,7 @@ public:
 	float BaseLookUpRate;
 
 	bool bCanMove;
-
+	
 	class UBoxComponent* GetCollisionComp();
 
 	void StopMoving();
@@ -51,8 +51,12 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* CollisionComp;
+	UPROPERTY(EditAnywhere)
+		int Target;
 	UFUNCTION(BlueprintCallable)
 		bool GetCanMove();
+	UFUNCTION(BlueprintCallable)
+		int GetTarget();
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
