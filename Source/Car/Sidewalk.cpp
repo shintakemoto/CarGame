@@ -39,7 +39,8 @@ UBoxComponent * ASidewalk::GetCollisionComp()
 void ASidewalk::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	ACarPawn* CarPawn = Cast<ACarPawn>(OtherActor);
-	CarPawn->InSidewalk();
-
+	if (OtherActor != nullptr && OtherActor->IsA(ACarPawn::StaticClass())) {
+		ACarPawn* CarPawn = Cast<ACarPawn>(OtherActor);
+		CarPawn->InSidewalk();
+	}
 }

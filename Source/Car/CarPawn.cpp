@@ -132,6 +132,7 @@ ACarPawn::ACarPawn()
 
 	MaxSpeedAllowed = 100;
 	Points = 0;
+	Invincible = false;
 }
 
 void ACarPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -242,6 +243,8 @@ void ACarPawn::BeginPlay()
 
 	TotalIndex = 0;
 	CPAmmount = 0;
+	Goals = 0;
+	bWinGame = false;
 
 	if (HUDMobile != NULL) {
 		UWorld* World = GetWorld();
@@ -292,7 +295,7 @@ void ACarPawn::UpdateHUDStrings()
 	if (KPH_int > MaxSpeedAllowed)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("EXCEDEU O LIMITE DE VELOCIDADE"));
-		Points--;
+		Penalty(2);
 	}
 }
 
@@ -333,10 +336,7 @@ void ACarPawn::CheckLightColor(int32 LightColor)
 	if (LightColor <= 5)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FUROU O SINAL"));
-		Points--;
-	}
-	else {
-		Points++;
+		Penalty(4);
 	}
 }
 
@@ -344,26 +344,47 @@ void ACarPawn::CheckDirection(int32 Index)
 {
 	TotalIndex += Index;
 	CPAmmount++;
-	
-	//UE_LOG(LogTemp, Warning, TEXT("total index %d"), this->TotalIndex);
-	//UE_LOG(LogTemp, Warning, TEXT("cp ammount %d"), this->CPAmmount);
 
 	if ((CPAmmount == 1 && TotalIndex != 1) || (CPAmmount == 2 && TotalIndex != 3) || (CPAmmount == 3 && TotalIndex != 7) ||
 		(CPAmmount == 4 && TotalIndex != 15) || (CPAmmount == 5 && TotalIndex != 31)) {
 		UE_LOG(LogTemp, Warning, TEXT("DIRECAO ERRADA"));
-		Points--;
+		Penalty(4);
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("DIRECAO OK"));
 	}
-	
-
 }
 
 void ACarPawn::InSidewalk()
 {
-	Points--;
+	Penalty(3);
 	UE_LOG(LogTemp, Warning, TEXT("CALCADA"));
 }
 
+void ACarPawn::Penalty(int32 PointQuant)
+{
+	if (!Invincible) {
+		Points -= PointQuant;
+		GetWorldTimerManager().SetTimer(PenaltyTimer, this, &ACarPawn::CoolDown, 5.0f, false);
+		Invincible = true;
+	}
+}
+
+void ACarPawn::CoolDown()
+{
+	Invincible = false;
+}
+
+void ACarPawn::Score()
+{
+	Goals++;
+	if (Goals >= 3) {
+		bWinGame = true;
+	}
+}
+
+bool ACarPawn::CheckWin()
+{
+	return bWinGame;;
+}
 
 #undef LOCTEXT_NAMESPACE

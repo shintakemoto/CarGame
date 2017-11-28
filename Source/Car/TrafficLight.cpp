@@ -29,7 +29,6 @@ void ATrafficLight::BeginPlay()
 {
 	Super::BeginPlay();
 	CountTime();
-	
 }
 
 // Called every frame
@@ -91,7 +90,6 @@ void ATrafficLight::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor 
 	}
 	if (OtherActor != nullptr && OtherActor->IsA(ATP_ThirdPersonCharacter::StaticClass())) {
 		ATP_ThirdPersonCharacter* ThirdPerson = Cast<ATP_ThirdPersonCharacter>(OtherActor);
-		UE_LOG(LogTemp, Warning, TEXT("overlap t light"));
 		CarNPC = ThirdPerson;
 		if (LightColor <= 5) {
 			CarNPC->StopMoving();
@@ -101,5 +99,14 @@ void ATrafficLight::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor 
 			CarNPC->KeepMoving();
 			UE_LOG(LogTemp, Warning, TEXT("GO"));
 		}
+	}
+}
+
+void ATrafficLight::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor != nullptr && OtherActor->IsA(ATP_ThirdPersonCharacter::StaticClass())) {
+		ATP_ThirdPersonCharacter* ThirdPerson = Cast<ATP_ThirdPersonCharacter>(CarNPC);
+		ThirdPerson = nullptr;
 	}
 }

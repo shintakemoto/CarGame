@@ -110,12 +110,14 @@ public:
 	void CheckLightColor(int32);
 	void CheckDirection(int32);
 	void InSidewalk();
+	void Penalty(int32);
+	void Score();
 
 	int32 Points;
 	int32 MaxSpeedAllowed;
 	int32 TotalIndex;
 	int32 CPAmmount;
-	
+	int32 Goals;
 
 private:
 	/** 
@@ -142,6 +144,13 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 		int32 GetPoints();
+	UFUNCTION(BlueprintCallable)
+		bool CheckWin();
+
+	FTimerHandle PenaltyTimer;
+	void CoolDown();
+	bool Invincible;
+	bool bWinGame;
 
 public:
 	/** Returns SpringArm subobject **/

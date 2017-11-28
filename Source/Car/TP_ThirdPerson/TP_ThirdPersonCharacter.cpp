@@ -9,32 +9,29 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Runtime/Engine/Public/TimerManager.h"
 #include "TrafficLight.h"
+#include "CarPawn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ATP_ThirdPersonCharacter
 
 ATP_ThirdPersonCharacter::ATP_ThirdPersonCharacter()
 {
-	// Set size for collision capsule
 	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
@@ -82,11 +79,9 @@ void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATP_ThirdPersonCharacter::OnResetVR);
 }
 
-
 void ATP_ThirdPersonCharacter::StopMoving()
 {
 	bCanMove = false;
-	
 }
 
 void ATP_ThirdPersonCharacter::KeepMoving()
@@ -174,6 +169,22 @@ void ATP_ThirdPersonCharacter::OnOverlapBegin(UPrimitiveComponent * OverlappedCo
 		if (Target > 2) {
 			Target = 0;
 		}
-		UE_LOG(LogTemp, Warning, TEXT("NEXT"));		
+	}
+	if (OtherActor != nullptr && 
+		(OtherActor->IsA(ATP_ThirdPersonCharacter::StaticClass())) || 
+		(OtherActor->IsA(ACarPawn::StaticClass()))) {
+		StopMoving();
 	}
 }
+
+void ATP_ThirdPersonCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	if (OtherActor != nullptr &&
+		(OtherActor->IsA(ATP_ThirdPersonCharacter::StaticClass())) ||
+		(OtherActor->IsA(ACarPawn::StaticClass()))) {
+		GetWorldTimerManager().SetTimer(StartTimer, this, 
+			&ATP_ThirdPersonCharacter::KeepMoving, 2.0f, false);
+	
+	}
+}
+
