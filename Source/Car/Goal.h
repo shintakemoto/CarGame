@@ -29,7 +29,7 @@ private:
 		class UBoxComponent* CollisionComp;
 	UPROPERTY(EditAnywhere)
 		int Number;
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		int GetNumber();
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,

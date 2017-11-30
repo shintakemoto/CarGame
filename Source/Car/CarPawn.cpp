@@ -132,6 +132,7 @@ ACarPawn::ACarPawn()
 
 	MaxSpeedAllowed = 100;
 	Points = 0;
+	
 	Invincible = false;
 }
 
@@ -244,6 +245,7 @@ void ACarPawn::BeginPlay()
 	TotalIndex = 0;
 	CPAmmount = 0;
 	Goals = 0;
+	Infras = 0;
 	bWinGame = false;
 
 	if (HUDMobile != NULL) {
@@ -302,6 +304,11 @@ void ACarPawn::UpdateHUDStrings()
 int32 ACarPawn::GetPoints()
 {
 	return Points;
+}
+
+int32 ACarPawn::GetInfras()
+{
+	return Infras;
 }
 
 void ACarPawn::SetupInCarHUD()
@@ -366,6 +373,7 @@ void ACarPawn::Penalty(int32 PointQuant)
 		Points -= PointQuant;
 		GetWorldTimerManager().SetTimer(PenaltyTimer, this, &ACarPawn::CoolDown, 5.0f, false);
 		Invincible = true;
+		Infras++;
 	}
 }
 
@@ -377,8 +385,9 @@ void ACarPawn::CoolDown()
 void ACarPawn::Score()
 {
 	Goals++;
-	if (Goals >= 3) {
+	if (Goals >= 1) {
 		bWinGame = true;
+		UE_LOG(LogTemp, Warning, TEXT("Ganhou"));
 	}
 }
 

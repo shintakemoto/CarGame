@@ -114,6 +114,7 @@ public:
 	void Score();
 
 	int32 Points;
+	int32 Infras;
 	int32 MaxSpeedAllowed;
 	int32 TotalIndex;
 	int32 CPAmmount;
@@ -145,12 +146,15 @@ private:
 	UFUNCTION(BlueprintCallable)
 		int32 GetPoints();
 	UFUNCTION(BlueprintCallable)
+		int32 GetInfras();
+	UFUNCTION(BlueprintCallable)
 		bool CheckWin();
 
 	FTimerHandle PenaltyTimer;
 	void CoolDown();
 	bool Invincible;
 	bool bWinGame;
+	
 
 public:
 	/** Returns SpringArm subobject **/

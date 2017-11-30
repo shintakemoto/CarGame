@@ -42,7 +42,7 @@ void ATrafficLight::Tick(float DeltaTime)
 		Mesh->SetStaticMesh(GreenLight);
 		if (CarNPC != nullptr) {
 			CarNPC->KeepMoving();
-			UE_LOG(LogTemp, Warning, TEXT("GO"));
+			//UE_LOG(LogTemp, Warning, TEXT("GO"));
 		}
 	}
 	else if (LightColor == 10) {
@@ -97,7 +97,7 @@ void ATrafficLight::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor 
 		}
 		else {
 			CarNPC->KeepMoving();
-			UE_LOG(LogTemp, Warning, TEXT("GO"));
+			//UE_LOG(LogTemp, Warning, TEXT("GO"));
 		}
 	}
 }
